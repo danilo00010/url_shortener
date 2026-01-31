@@ -1,0 +1,73 @@
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: ['redis-server']
+    restart: on-failure:3
+    ports:
+      - 6379:6379
+    volumes:
+      - .redis/data:/data
+    networks:
+      - url_shortner
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: on-failure:3
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+    ports:
+      - 27017:27017
+    volumes:
+      - .mongo/data:/data/db
+    networks:
+      - url_shortner
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+  mongo-express:
+    image: mongo-express
+    restart: on-failure:3
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/
+      ME_CONFIG_BASICAUTH_ENABLED: 'true'
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
+    networks:
+      - url_shortner
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: api
+    container_name: api
+    restart: on-failure:3
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - url_shortner
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+networks:
+  url_shortner:
+    driver: bridge

@@ -1,0 +1,32 @@
+{
+	"name": "url-shortener",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon",
+		"build": "tsc",
+		"start": "node dist/index.js",
+		"test": "node --env-file=.env.testing --experimental-test-coverage --import tsx --test ./test/**/*.test.ts",
+		"test:dev": "node --env-file=.env.testing --experimental-test-coverage --import tsx --test --watch ./test/**/*.test.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "module",
+	"devDependencies": {
+		"@types/node": "^25.0.6",
+		"@types/swagger-ui-dist": "^3.30.6",
+		"nodemon": "^3.1.11",
+		"ts-node": "^10.9.2",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3",
+		"undici": "^7.19.2"
+	},
+	"dependencies": {
+		"hashids": "^2.3.0",
+		"mongodb": "7.0",
+		"redis": "^5.10.0",
+		"swagger-ui-dist": "^5.31.0"
+	}
+}

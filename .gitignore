@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.redis/
+.mongo/
+
+.env*
+!.env.example
